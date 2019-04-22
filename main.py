@@ -27,9 +27,13 @@ def get_image_info(image):
 
 
 def gen_video(in_path, size, version):
-
-    filelist = os.listdir(in_path)  # 获取该目录下的所有文件名
-
+    """
+    generate video with images
+    :param in_path:
+    :param size: image resolution
+    :param version: to generate video name
+    :return:
+    """
     '''
     fps:
     帧率：1秒钟有n张图片写进去[控制一张图片停留5秒钟，那就是帧率为1，重复播放这张图片5次] 
@@ -37,11 +41,12 @@ def gen_video(in_path, size, version):
     '''
     fps = 12
     # size = (591,705) #图片的分辨率片
-    out_pth = VIDEO_PTH + "{0:02d}.avi".format(version)  # 导出路径
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')  # 不同视频编码对应不同视频格式（例：'I','4','2','0' 对应avi格式）
+    out_pth = VIDEO_PTH + "video{0:02d}.avi".format(version)  # 导出路径
+    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')  # 不同视频编码对应不同视频格式（例：'I','4','2','0' 对应avi格式）
 
     video = cv2.VideoWriter(out_pth, fourcc, fps, size)
 
+    filelist = os.listdir(in_path)  # 获取该目录下的所有文件名
     for item in filelist:
         if item.endswith('.png'):  # 判断图片后缀是否是.png
             item = in_path + item

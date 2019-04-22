@@ -12,6 +12,7 @@ VIDEO_PTH = '../video/'
 
 class IterImage:
     def __init__(self, pth):
+        self.pth = pth
         self.filelist = os.listdir(pth)
         self.position = 0
 
@@ -22,9 +23,9 @@ class IterImage:
         if self.position >= len(self.filelist):
             raise StopIteration
 
+        img_nm = self.filelist[self.position]
+        ret_img = cv2.imread(self.pth + img_nm)
         self.position += 1
-        ret_img = self.filelist[self.position]
-        ret_img = np.array(ret_img)
         return ret_img
 
 
@@ -179,7 +180,11 @@ def gen_opt_flow_img(img_pth):
     mask = np.zeros_like(old_frame)
 
     while 1:
-        frame = next(cap)
+        try:
+            frame = next(cap)
+        except StopIteration:
+            break
+
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # calculate optical flow
@@ -198,6 +203,9 @@ def gen_opt_flow_img(img_pth):
         img = cv2.add(frame, mask)
 
         cv2.imshow('frame', img)
+
+        # cv2.waitKey(0)
+
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break
@@ -206,15 +214,18 @@ def gen_opt_flow_img(img_pth):
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1, 1, 2)
 
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
 def main():
 
-    subset_pth = 'training/albedo/'
+    subset_pth = 'training/'
+    # img_category = 'albedo/'
+    img_category = 'final/'
     # imgset = 'cave_4/'
     imgset = 'alley_1/'
-    imgset_pth = os.path.join(MPI_PTH, subset_pth, imgset)
+    imgset_pth = os.path.join(MPI_PTH, subset_pth, img_category, imgset)
 
     # # ==================================================
     # # calculate average image
@@ -228,9 +239,9 @@ def main():
 
     # # ==================================================
     # # visualize optical flow by video
-    video_pth = os.path.join(OW_PTH, 'Overwatch_v02.mp4')
-    print(video_pth)
-    gen_opt_flow_video(video_pth)
+    # video_pth = os.path.join(OW_PTH, 'Overwatch_v02.mp4')
+    # print(video_pth)
+    # gen_opt_flow_video(video_pth)
     # # --------------------------------------------------
 
     # # ==================================================

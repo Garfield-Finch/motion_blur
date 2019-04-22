@@ -5,7 +5,8 @@ import numpy as np
 import time
 
 
-DATASET = '../dataset/MPI-Sintel-complete/'
+MPI_PTH = '../dataset/MPI-Sintel-complete/'
+OW_PTH = '../dataset/Overwatch/'
 VIDEO_PTH = '../video/'
 
 
@@ -29,6 +30,11 @@ def get_image_info(image):
 def gen_video(in_path, size, version):
     """
     generate video with images
+    usage: =======================================
+    # generate video from images
+    img = cv2.imread(os.path.join(imgset_pth, gen_nm(1)))
+    gen_video(imgset_pth, img.shape[:2], 1)
+    ----------------------------------------------
     :param in_path:
     :param size: image resolution
     :param version: to generate video name
@@ -69,28 +75,9 @@ def avg_img(imgset_pth, img_n, mix_n):
     return img
 
 
-def main():
-
-    subset_pth = 'training/albedo/'
-    # imgset = 'cave_4/'
-    imgset = 'alley_1/'
-
-    imgset_pth = os.path.join(DATASET, subset_pth, imgset)
-
-    # # calculate average image
-    # print(imgset_pth)
-    # img = avg_img(imgset_pth, 11, 2)
-    # # visualize average image
-    # cv2.namedWindow('test_image', cv2.WINDOW_AUTOSIZE)
-    # cv2.imshow('test_image', img)
-    # cv2.waitKey(0)
-
-    # # generate video from images
-    # img = cv2.imread(os.path.join(imgset_pth, gen_nm(1)))
-    # gen_video(imgset_pth, img.shape[:2], 1)
-
-    # calculate optical flow
-    cap = cv2.VideoCapture('slow.flv')
+def gen_opt_flow(video_pth):
+    cap = cv2.VideoCapture(video_pth)
+    # cap = cv2.VideoCapture('slow.flv')
 
     # params for ShiTomasi corner detection
     feature_params = dict(maxCorners=100,
@@ -108,6 +95,7 @@ def main():
 
     # Take first frame and find corners in it
     ret, old_frame = cap.read()
+    print(type(old_frame))
     old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
     p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **feature_params)
 
@@ -144,6 +132,27 @@ def main():
 
     cv2.destroyAllWindows()
     cap.release()
+
+
+def main():
+
+    subset_pth = 'training/albedo/'
+    # imgset = 'cave_4/'
+    imgset = 'alley_1/'
+    imgset_pth = os.path.join(MPI_PTH, subset_pth, imgset)
+
+    # # calculate average image
+    # print(imgset_pth)
+    # img = avg_img(imgset_pth, 11, 2)
+    # # visualize average image
+    # cv2.namedWindow('test_image', cv2.WINDOW_AUTOSIZE)
+    # cv2.imshow('test_image', img)
+    # cv2.waitKey(0)
+
+    # calculate optical flow
+    video_pth = os.path.join(OW_PTH, 'Overwatch_v01.mp4')
+    print(video_pth)
+    gen_opt_flow(video_pth)
 
 
 if __name__ == '__main__':

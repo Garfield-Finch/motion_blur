@@ -1,10 +1,13 @@
+# project specific
+*.flo
+
 # gitignore for python project
 .idea
 *.iml
 *.pyc
 __pycache__
 
-# gitignore for MATLAB
+# ================ gitignore for MATLAB ==============
 # Windows default autosave extension
 *.asv
 
@@ -19,3 +22,4 @@ octave-workspace
 
 # Simulink autosave extension
 .autosave
+# ---------------------------------------------------

@@ -1,4 +1,21 @@
+# gitignore for python project
 .idea
 *.iml
 *.pyc
 __pycache__
+
+# gitignore for MATLAB
+# Windows default autosave extension
+*.asv
+
+# Compiled MEX binaries (all platforms)
+*.mex*
+
+# Simulink Code Generation
+slprj/
+
+# Session info
+octave-workspace
+
+# Simulink autosave extension
+.autosave

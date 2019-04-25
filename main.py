@@ -218,6 +218,10 @@ def gen_opt_flow_img(img_pth):
     cv2.destroyAllWindows()
 
 
+def blur_with_opt_flow():
+    pass
+
+
 def main():
 
     subset_pth = 'training/'
@@ -227,8 +231,8 @@ def main():
     imgset = 'alley_1/'
     imgset_pth = os.path.join(MPI_PTH, subset_pth, img_category, imgset)
 
-    # # ==================================================
     # # calculate average image
+    # # ==================================================
     # print(imgset_pth)
     # img = avg_img(imgset_pth, 11, 2)
     # # visualize average image
@@ -237,16 +241,21 @@ def main():
     # cv2.waitKey(0)
     # # --------------------------------------------------
 
-    # # ==================================================
     # # visualize optical flow by video
+    # # ==================================================
     # video_pth = os.path.join(OW_PTH, 'Overwatch_v02.mp4')
     # print(video_pth)
     # gen_opt_flow_video(video_pth)
     # # --------------------------------------------------
 
+    # # calculate optical flow by images
     # # ==================================================
-    # calculate optical flow by images
-    gen_opt_flow_img(imgset_pth)
+    # gen_opt_flow_img(imgset_pth)
+    # # --------------------------------------------------
+
+    # # generate blur with optical flow
+    # # ==================================================
+    blur_with_opt_flow()
     # # --------------------------------------------------
 
 

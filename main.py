@@ -86,9 +86,29 @@ def gen_video(in_path, size, version):
 def avg_img(imgset_pth, img_n, mix_n):
     img = np.array(cv2.imread(os.path.join(imgset_pth, gen_nm(img_n)))).astype(np.float)
     total = 1
-    for i in range(max(img_n - mix_n, 1), min(img_n + mix_n, 50)):
-        total += 1
-        img += np.array(cv2.imread(os.path.join(imgset_pth, gen_nm(i)))).astype(np.float)
+    for i in range(mix_n):
+
+        bias = i // 2
+        img_num = img_n - (bias + 1)
+        if 1 <= img_num <= 50:
+            if i % 2 != 0:
+                img_nm = 'frame_{0:04d}.png'.format(img_num)
+            else:
+                img_nm = 'frame_1{0:03d}.png'.format(img_num)
+
+            total += 1
+            img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
+
+        bias = (i+1) // 2
+        img_num = img_n - (bias + 1)
+        if 1 <= img_num <= 50:
+            if i % 2 == 0:
+                img_nm = 'frame_{0:04d}.png'.format(img_num)
+            else:
+                img_nm = 'frame_1{0:03d}.png'.format(img_num)
+
+            total += 1
+            img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
     img = img / total
     img = img.astype(np.uint8)
     print('img num: {}; mix img number: {}'.format(img_n, mix_n))
@@ -233,12 +253,12 @@ def main():
 
     # # calculate average image
     # # ==================================================
-    # print(imgset_pth)
-    # img = avg_img(imgset_pth, 11, 2)
-    # # visualize average image
-    # cv2.namedWindow('test_image', cv2.WINDOW_AUTOSIZE)
-    # cv2.imshow('test_image', img)
-    # cv2.waitKey(0)
+    print(imgset_pth)
+    img = avg_img(imgset_pth, 39, 1)
+    # visualize average image
+    # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
+    cv2.imshow('output_image', img)
+    cv2.waitKey(0)
     # # --------------------------------------------------
 
     # # visualize optical flow by video
@@ -255,7 +275,7 @@ def main():
 
     # # generate blur with optical flow
     # # ==================================================
-    blur_with_opt_flow()
+    # blur_with_opt_flow()
     # # --------------------------------------------------
 
 

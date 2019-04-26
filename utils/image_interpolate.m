@@ -8,8 +8,8 @@ for img_epoch = 1: 49
     img_p = imread(img_nm);
 %     figure(1), imshow(img_p), title('img\_pre');
 
-    img_nm = [img_pth, 'frame_0002.png'];
-    img_a = imread(img_nm);
+%     img_nm = [img_pth, gen_nm(img_epoch + 1, 0)];
+%     img_a = imread(img_nm);
 %     figure(2), imshow(img_a), title('img\_after');
 
     [h, w, ~] = size(img_p);
@@ -27,13 +27,14 @@ for img_epoch = 1: 49
 
 %     figure(3), imshow(img_o), title('img\_gen');
 
+    % inpaint
     img_mask = gen_mask(img_o);
     img_o = inpaintCoherent(img_o, img_mask);
     figure(4), imshow(img_o), title('img\_inpaint');
     
     disp(['epoch ', num2str(img_epoch), ' accomplished']);
     img_nm = [img_pth, gen_nm(img_epoch, 1)];
-    imwrite(img_o, img_nm);
+%     imwrite(img_o, img_nm);
 end
 
 % % compare output and target

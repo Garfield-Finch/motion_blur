@@ -2,7 +2,7 @@
 flo_pth = '../../dataset/MPI-Sintel-complete/training/flow/alley_1/';
 img_pth = '../../dataset/MPI-Sintel-complete/training/final/alley_1/';
 
-img_epoch = 48;
+img_epoch = 7;
 img_nm = [img_pth, gen_nm(img_epoch, 0)];
 disp(['image name: ', img_nm]);
 img_i = imread(img_nm);
@@ -21,18 +21,18 @@ for i = 1:h
     for j = 1:w
         dx = flo_pre(i, j, 1);
         dy = flo_pre(i, j, 2);
-        [pre(i, j, 1), pre(i, j, 2)] = gen_cor_flo(i, j, dx, dy, h, w);
+        [pre(i, j, 1), pre(i, j, 2)] = gen_cor(i, j, dx, dy, h, w);
         
         dx = flo_i(i, j, 1);
         dy = flo_i(i, j, 2);
-        [x, y] = gen_cor_flo(i, j, dx, dy, h, w);
-        aft(x, y, 1) = x;
-        aft(x, y, 2) = y;
+        [x, y] = gen_cor(i, j, dx, dy, h, w);
+        aft(x, y, 1) = i;
+        aft(x, y, 2) = j;
     end
 end
 
+% calculate img_o by kernel
 img_o = uint8(zeros(h, w, 3));
-% 
 for i = 1:h
     for j = 1:w
         [r, g, b] = cal_pix(i, j, pre, img_i, aft);
@@ -95,9 +95,9 @@ function imgnm = gen_nm(num, key)
     end
 end
 
-function [x, y] = gen_cor_flo(imgx, imgy, dx, dy, h, w)
-    x = round(imgx + dy);
-    y = round(imgy + dx);
+function [x, y] = gen_cor(imgx, imgy, dx, dy, h, w)
+    x = round(imgx + dy / 2);
+    y = round(imgy + dx / 2);
     if x < 1
         x = 1;
     end
@@ -120,14 +120,14 @@ function [r, g, b] = cal_pix(i, j, pre, img_i, aft)
     
     x = pre(i, j, 1);
     y = pre(i, j, 2);
-    if x>1 && x<h && y>1 && y<w
+    if x>=1 && x<=h && y>=1 && y<=w
         before = double(img_i(x, y, :));
         total = total + 1;
     end
     
     x = aft(i, j, 1);
     y = aft(i, j, 2);
-    if x>1 && x<h && y>1 && y<w
+    if x>=1 && x<=h && y>=1 && y<=w
         after = double(img_i(x, y, :));
         total = total + 1;
     end

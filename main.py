@@ -107,7 +107,6 @@ def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
                 else:
                     img_nm = 'frame_{0:04d}.png'.format(img_num)
 
-                print(i, img_nm)
                 total += 1
                 img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
 
@@ -119,8 +118,6 @@ def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
                     img_nm = 'frame_1{0:03d}.png'.format(img_num)
                 else:
                     img_nm = 'frame_{0:04d}.png'.format(img_num)
-
-                print(i, img_nm)
 
                 total += 1
                 img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
@@ -279,8 +276,8 @@ def main():
     # # calculate average image
     # # ==================================================
     print(imgset_pth)
-    img_num = 32
-    img_avg = avg_img(imgset_pth, img_num, 4, is_itrplat=True)
+    img_num = 7
+    img_avg = avg_img(imgset_pth, img_num, 1, is_itrplat=False)
     # visualize average image
     # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('average_image', img_avg)
@@ -289,14 +286,14 @@ def main():
 
     # # calculate ssim
     # # ==================================================
-    # img_pth = os.path.join(imgset_pth, 'frame_{0:04d}_ker.png'.format(img_num))
-    # img_ker = cv2.imread(img_pth)
-    # cv2.imshow('kernel_image', img_ker)
-    # cv2.waitKey(0)
-    # gray_img_avg = cv2.cvtColor(img_avg, cv2.COLOR_RGB2GRAY)
-    # gray_img_ker = cv2.cvtColor(img_ker, cv2.COLOR_RGB2GRAY)
-    # (score, diff) = compare_ssim(gray_img_avg, gray_img_ker, full=True)
-    # print('SSIM: {}'.format(score))
+    img_pth = os.path.join(imgset_pth, 'frame_{0:04d}_ker.png'.format(img_num))
+    img_ker = cv2.imread(img_pth)
+    cv2.imshow('kernel_image', img_ker)
+    cv2.waitKey(0)
+    gray_img_avg = cv2.cvtColor(img_avg, cv2.COLOR_RGB2GRAY)
+    gray_img_ker = cv2.cvtColor(img_ker, cv2.COLOR_RGB2GRAY)
+    (score, diff) = compare_ssim(gray_img_avg, gray_img_ker, full=True)
+    print('SSIM: {}'.format(score))
     # # --------------------------------------------------
 
     # # visualize optical flow by video

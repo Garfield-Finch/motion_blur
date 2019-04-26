@@ -1,7 +1,9 @@
 import os
 import cv2
-from PIL import Image
 import numpy as np
+import skimage
+from skimage.measure import compare_ssim
+from PIL import Image
 import time
 
 
@@ -83,35 +85,62 @@ def gen_video(in_path, size, version):
     video.release()  # 释放
 
 
-def avg_img(imgset_pth, img_n, mix_n):
+def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
+    """
+    :param imgset_pth:
+    :param img_n: image number
+    :param mix_n: mix image number
+    :param is_itrplat: is interpolation
+    :return: the average image
+    """
     img = np.array(cv2.imread(os.path.join(imgset_pth, gen_nm(img_n)))).astype(np.float)
     total = 1
-    for i in range(mix_n):
 
-        bias = i // 2
-        img_num = img_n - (bias + 1)
-        if 1 <= img_num <= 50:
-            if i % 2 != 0:
+    if is_itrplat:
+        for i in range(mix_n):
+            # left images
+            bias = i // 2
+            img_num = img_n - (bias + 1)
+            if 1 <= img_num <= 50:
+                if i % 2 == 0:
+                    img_nm = 'frame_1{0:03d}.png'.format(img_num)
+                else:
+                    img_nm = 'frame_{0:04d}.png'.format(img_num)
+
+                print(i, img_nm)
+                total += 1
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
+
+            # right images
+            bias = (i+1) // 2
+            img_num = img_n + bias
+            if 1 <= img_num <= 50:
+                if i % 2 == 0:
+                    img_nm = 'frame_1{0:03d}.png'.format(img_num)
+                else:
+                    img_nm = 'frame_{0:04d}.png'.format(img_num)
+
+                print(i, img_nm)
+
+                total += 1
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
+    else:
+        for i in range(1, mix_n + 1):
+            img_num = img_n - i
+            if 1 <= img_num <= 50:
                 img_nm = 'frame_{0:04d}.png'.format(img_num)
-            else:
-                img_nm = 'frame_1{0:03d}.png'.format(img_num)
+                total += 1
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
 
-            total += 1
-            img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
-
-        bias = (i+1) // 2
-        img_num = img_n - (bias + 1)
-        if 1 <= img_num <= 50:
-            if i % 2 == 0:
+            img_num = img_n + i
+            if 1 <= img_num <= 50:
                 img_nm = 'frame_{0:04d}.png'.format(img_num)
-            else:
-                img_nm = 'frame_1{0:03d}.png'.format(img_num)
+                total += 1
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
 
-            total += 1
-            img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
     img = img / total
     img = img.astype(np.uint8)
-    print('img num: {}; mix img number: {}'.format(img_n, mix_n))
+    print('=== AVG_IMG report ===: img num: {}; mix img number: {}'.format(img_n, mix_n))
 
     return img
 
@@ -238,10 +267,6 @@ def gen_opt_flow_img(img_pth):
     cv2.destroyAllWindows()
 
 
-def blur_with_opt_flow():
-    pass
-
-
 def main():
 
     subset_pth = 'training/'
@@ -254,11 +279,24 @@ def main():
     # # calculate average image
     # # ==================================================
     print(imgset_pth)
-    img = avg_img(imgset_pth, 39, 1)
+    img_num = 32
+    img_avg = avg_img(imgset_pth, img_num, 4, is_itrplat=True)
     # visualize average image
     # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
-    cv2.imshow('output_image', img)
+    cv2.imshow('average_image', img_avg)
     cv2.waitKey(0)
+    # # --------------------------------------------------
+
+    # # calculate ssim
+    # # ==================================================
+    # img_pth = os.path.join(imgset_pth, 'frame_{0:04d}_ker.png'.format(img_num))
+    # img_ker = cv2.imread(img_pth)
+    # cv2.imshow('kernel_image', img_ker)
+    # cv2.waitKey(0)
+    # gray_img_avg = cv2.cvtColor(img_avg, cv2.COLOR_RGB2GRAY)
+    # gray_img_ker = cv2.cvtColor(img_ker, cv2.COLOR_RGB2GRAY)
+    # (score, diff) = compare_ssim(gray_img_avg, gray_img_ker, full=True)
+    # print('SSIM: {}'.format(score))
     # # --------------------------------------------------
 
     # # visualize optical flow by video
@@ -271,11 +309,6 @@ def main():
     # # calculate optical flow by images
     # # ==================================================
     # gen_opt_flow_img(imgset_pth)
-    # # --------------------------------------------------
-
-    # # generate blur with optical flow
-    # # ==================================================
-    # blur_with_opt_flow()
     # # --------------------------------------------------
 
 

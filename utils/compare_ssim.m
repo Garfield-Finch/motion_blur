@@ -21,14 +21,15 @@ figure(16), imshow(img_avg_ld), title('load avg img');
 
 img_dif = double(img_avg) - double(img_avg_ld);
 figure(161), imshow(img_dif, []), title('difference img');
-sum(sum(img_dif))
+
+% sum(sum(img_dif))
 
 img_nm = 'frame_0007_ker.png';
 img_ker = imread([img_pth, img_nm]);
 
 figure(3), imshow(img_ker), title('img\_ker');
 
-[ssimval,ssimmap] = ssim(img_avg, img_ker);
+[ssimval,ssimmap] = ssim(img_avg_ld, img_ker);
 
 figure(4), imshow(ssimmap), title('ssimmap');
 

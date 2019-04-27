@@ -284,22 +284,27 @@ def main():
     img_avg = avg_img(imgset_pth, img_num, 1)
     # visualize average image
     # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
-    cv2.imshow('average_image', img_avg)
-    cv2.waitKey(0)
-    img_nm = os.path.join(imgset_pth, 'frame_0007_avg.png')
-    cv2.imwrite(img_nm, img_avg)
+    # cv2.imshow('average_image', img_avg)
+    # cv2.waitKey(0)
+    # write image
+    # img_nm = os.path.join(imgset_pth, 'frame_0007_avg.png')
+    # cv2.imwrite(img_nm, img_avg)
     # # --------------------------------------------------
 
     # # calculate ssim
     # # ==================================================
     img_pth = os.path.join(imgset_pth, 'frame_{0:04d}_ker.png'.format(img_num))
     img_ker = cv2.imread(img_pth)
-    cv2.imshow('kernel_image', img_ker)
-    cv2.waitKey(0)
-    gray_img_avg = cv2.cvtColor(img_avg, cv2.COLOR_RGB2GRAY)
-    gray_img_ker = cv2.cvtColor(img_ker, cv2.COLOR_RGB2GRAY)
-    (score, diff) = compare_ssim(gray_img_avg, gray_img_ker, full=True)
+    # cv2.imshow('kernel_image', img_ker)
+    # cv2.waitKey(0)
+    # calculate ssim
+    # gray_img_avg = cv2.cvtColor(img_avg, cv2.COLOR_RGB2GRAY)
+    # gray_img_ker = cv2.cvtColor(img_ker, cv2.COLOR_RGB2GRAY)
+    # (score, diff) = compare_ssim(gray_img_avg, gray_img_ker, full=True)
+    (score, diff) = compare_ssim(img_avg, img_ker, full=True, multichannel=True)
     print('SSIM: {}'.format(score))
+    cv2.imshow('difference img', diff)
+    cv2.waitKey(0)
     # # --------------------------------------------------
 
     # # visualize optical flow by video

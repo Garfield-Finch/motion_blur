@@ -93,7 +93,7 @@ def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
     :param is_itrplat: is interpolation
     :return: the average image
     """
-    img = np.array(cv2.imread(os.path.join(imgset_pth, gen_nm(img_n)))).astype(np.float)
+    img = np.array(cv2.imread(os.path.join(imgset_pth, gen_nm(img_n)))).astype(np.double)
     total = 1
 
     if is_itrplat:
@@ -107,8 +107,10 @@ def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
                 else:
                     img_nm = 'frame_{0:04d}.png'.format(img_num)
 
+                print(img_nm)
+
                 total += 1
-                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.double)
 
             # right images
             bias = (i+1) // 2
@@ -119,8 +121,10 @@ def avg_img(imgset_pth, img_n, mix_n, is_itrplat=True):
                 else:
                     img_nm = 'frame_{0:04d}.png'.format(img_num)
 
+                print(img_nm)
+
                 total += 1
-                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.float)
+                img += np.array(cv2.imread(os.path.join(imgset_pth, img_nm))).astype(np.double)
     else:
         for i in range(1, mix_n + 1):
             img_num = img_n - i
@@ -282,6 +286,8 @@ def main():
     # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('average_image', img_avg)
     cv2.waitKey(0)
+    img_nm = os.path.join(imgset_pth, 'frame_0007_avg.png')
+    cv2.imwrite(img_nm, img_avg)
     # # --------------------------------------------------
 
     # # calculate ssim

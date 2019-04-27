@@ -21,7 +21,10 @@ for i = 1:h
     for j = 1:w
         dx = flo_pre(i, j, 1);
         dy = flo_pre(i, j, 2);
-        [pre(i, j, 1), pre(i, j, 2)] = gen_cor(i, j, dx, dy, h, w);
+        [x, y] = gen_cor(i, j, dx, dy, h, w);
+        [Ax, Ay] = gen_cor_flo(i, j, dx, dy, h, w);
+        pre(x, y, 1) = Ax;
+        pre(x, y, 2) = Ay;
         
         dx = flo_i(i, j, 1);
         dy = flo_i(i, j, 2);
@@ -111,6 +114,24 @@ function [x, y] = gen_cor(imgx, imgy, dx, dy, h, w)
         y = w;
     end
 end
+
+function [x, y] = gen_cor_flo(imgx, imgy, dx, dy, h, w)
+    x = round(imgx + dy);
+    y = round(imgy + dx);
+    if x < 1
+        x = 1;
+    end
+    if x > h
+        x = h;
+    end
+    if y < 1
+        y = 1;
+    end
+    if y > w
+        y = w;
+    end
+end
+
 
 function [r, g, b] = cal_pix(i, j, pre, img_i, aft)
     total = 1;

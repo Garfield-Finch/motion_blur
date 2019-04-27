@@ -277,7 +277,7 @@ def main():
     # # ==================================================
     print(imgset_pth)
     img_num = 7
-    img_avg = avg_img(imgset_pth, img_num, 1, is_itrplat=False)
+    img_avg = avg_img(imgset_pth, img_num, 1)
     # visualize average image
     # cv2.namedWindow('output_image', cv2.WINDOW_AUTOSIZE)
     cv2.imshow('average_image', img_avg)
